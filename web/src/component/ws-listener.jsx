@@ -11,10 +11,10 @@ import {
   updateShouldClearRecord,
   updateShowNewRecordTip
 } from 'action/globalStatusAction';
-const RecordWorkder = require('worker-loader?inline!./record-worker.jsx');
+const RecordWorker = require('worker-loader?inline!./record-worker.jsx');
 import { getJSON } from 'common/ApiUtil';
 
-const myRecordWorder = new RecordWorkder(window.URL.createObjectURL(new Blob([RecordWorkder.toString()])));
+const myRecordWorker = new RecordWorker(window.URL.createObjectURL(new Blob([RecordWorker.toString()])));
 const fetchLatestLog = function () {
   getJSON('/latestLog')
     .then((data) => {
@@ -22,7 +22,7 @@ const fetchLatestLog = function () {
         type: 'initRecord',
         data
       };
-      myRecordWorder.postMessage(JSON.stringify(msg));
+      myRecordWorker.postMessage(JSON.stringify(msg));
     })
     .catch((error) => {
       console.error(error);
@@ -56,7 +56,7 @@ class WsListener extends React.Component {
 
   loadPrevious() {
     this.stopPanelRefreshing();
-    myRecordWorder.postMessage(JSON.stringify({
+    myRecordWorker.postMessage(JSON.stringify({
       type: 'loadMore',
       data: -500
     }));
@@ -64,7 +64,7 @@ class WsListener extends React.Component {
 
   loadNext() {
     this.loadingNext = true;
-    myRecordWorder.postMessage(JSON.stringify({
+    myRecordWorker.postMessage(JSON.stringify({
       type: 'loadMore',
       data: 500
     }));
@@ -72,7 +72,7 @@ class WsListener extends React.Component {
 
   stopPanelRefreshing() {
     this.refreshing = false;
-    myRecordWorder.postMessage(JSON.stringify({
+    myRecordWorker.postMessage(JSON.stringify({
       type: 'updateRefreshing',
       refreshing: false
     }));
@@ -82,7 +82,7 @@ class WsListener extends React.Component {
     this.refreshing = true;
     this.loadingNext = false;
     this.props.dispatch(updateShowNewRecordTip(false));
-    myRecordWorder.postMessage(JSON.stringify({
+    myRecordWorker.postMessage(JSON.stringify({
       type: 'updateRefreshing',
       refreshing: true
     }));
@@ -102,7 +102,7 @@ class WsListener extends React.Component {
               type: 'updateSingle',
               data: record
             };
-            myRecordWorder.postMessage(JSON.stringify(msg));
+            myRecordWorker.postMessage(JSON.stringify(msg));
           }
           break;
         }
@@ -125,7 +125,7 @@ class WsListener extends React.Component {
               data: records
             };
 
-            myRecordWorder.postMessage(JSON.stringify(msg));
+            myRecordWorker.postMessage(JSON.stringify(msg));
           }
           break;
         }
@@ -150,7 +150,7 @@ class WsListener extends React.Component {
   }
 
   componentDidMount() {
-    myRecordWorder.addEventListener('message', (e) => {
+    myRecordWorker.addEventListener('message', (e) => {
       const data = JSON.parse(e.data);
       this.loadingNext = false;
 
@@ -185,7 +185,7 @@ class WsListener extends React.Component {
       const msg = {
         type: 'clear'
       };
-      myRecordWorder.postMessage(JSON.stringify(msg));
+      myRecordWorker.postMessage(JSON.stringify(msg));
       this.props.dispatch(updateShouldClearRecord(false));
     }
   }
@@ -200,7 +200,7 @@ class WsListener extends React.Component {
       filterStr
     };
 
-    myRecordWorder.postMessage(JSON.stringify(msg));
+    myRecordWorker.postMessage(JSON.stringify(msg));
 
     return <div></div>;
   }
