@@ -1,6 +1,6 @@
 {
   "name": "anyproxy",
-  "version": "4.0.0-beta14",
+  "version": "4.0.0-beta15",
   "description": "A fully configurable HTTP/HTTPS proxy in Node.js",
   "main": "proxy.js",
   "bin": {
