@@ -95,8 +95,8 @@
     "lint": "eslint .",
     "testserver": "node test/server/startServer.js",
     "testOutWeb": "jasmine test/spec_outweb/test_realweb_spec.js",
-    "buildweb": "set NODE_ENV=production && webpack --config web/webpack.config.js --process --colors",
-    "webserver": "set NODE_ENV=test && webpack --config web/webpack.config.js --process --colors --watch",
+    "buildweb": "NODE_ENV=production webpack --config web/webpack.config.js --process --colors",
+    "webserver": "NODE_ENV=test webpack --config web/webpack.config.js --process --colors --watch",
     "prepublish": "npm run buildweb"
   },
   "pre-commit": [
